@@ -12,7 +12,11 @@ public class NoteRead {
     private String name;
     private String content;
 
+    public NoteRead() {
+    }
+
     public NoteRead(Optional<Note> note) {
+        this();
         if (note.isPresent()) {
             this.id = note.get().getId();
             this.name = note.get().getName();
@@ -60,7 +64,5 @@ public class NoteRead {
             return false;
         }
         return true;
-    }
-    
-    
+    } 
 }

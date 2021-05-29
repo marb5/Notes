@@ -4,6 +4,7 @@ import com.example.notes.model.Note;
 import com.example.notes.model.NotePresent;
 import com.example.notes.model.NoteRead;
 import com.example.notes.model.NoteRepository;
+import java.lang.NullPointerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +109,27 @@ public class NoteServiceTest {
     
     @Test
     @DisplayName("should throw error \"Lack of note name!\" ")
+    void addNewNote_nullName_shouldThrowErrorLackName() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        JSONObject json = new JSONObject();
+        json.put("content", "Content for Note3");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.addNewNote(json);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of note name!\" ")
     void addNewNote_emptyName_shouldThrowErrorLackName() {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
@@ -147,6 +169,27 @@ public class NoteServiceTest {
         catch (ResponseStatusException e) {
             //then
             assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of note content!\" ")
+    void addNewNote_nullContent_shouldThrowErrorLackContent() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.addNewNote(json);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note content!\"");
         }
     }
     
@@ -321,7 +364,427 @@ public class NoteServiceTest {
         NoteService service = new NoteService(mockNoteRepository);
         //when
         NoteRead dto = service.addNewNote(json);
+        //and
+        NoteRead result = service.findNoteById(3);
         //then
         assertThat(dto).isEqualTo(new NoteRead(newNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(newNote));
+    }
+    
+    @Test
+    @DisplayName("should throw \"404 NOT_FOUND\"")
+    void updateNote_noteWithIdNotExists_shouldThrowErrorNotFound() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 3;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (Exception e) {
+            //then
+            assertThat(e).hasMessage("404 NOT_FOUND");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of note name!\" ")
+    void updateNote_emptyName_shouldThrowErrorLackName() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "");
+        json.put("content", "Content for Note3");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of note name!\" ")
+    void updateNote_whitespacesName_shouldThrowErrorLackName() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "      ");
+        json.put("content", "Content for Note3");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of note content!\" ")
+    void updateNote_emptyContent_shouldThrowErrorLackContent() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note content!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of note content!\" ")
+    void updateNote_whitespacesContent_shouldThrowErrorLackContent() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "                   ");
+        json.put("boxId", 1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of note content!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Box id should be greater than 0!\" ")
+    void updateNote_zeroBoxIdValue_shouldThrowErrorBoxIdNotPositive() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        json.put("boxId", 0);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Box id should be greater than 0!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Box id should be greater than 0!\" ")
+    void updateNote_negativeBoxIdValue_shouldThrowErrorBoxIdNotPositive() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        json.put("boxId", -1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Box id should be greater than 0!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Wrong box id!\" ")
+    void updateNote_emptyStringBoxId_shouldThrowErrorWrongBoxId() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        json.put("boxId", "");
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessageContaining("400 BAD_REQUEST \"Wrong box id!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Wrong box id!\" ")
+    void updateNote_stringBoxId_shouldThrowErrorWrongBoxId() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        json.put("boxId", "q");
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        try {
+            service.updateNote(json, id);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessageContaining("400 BAD_REQUEST \"Wrong box id!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_everythingsRight_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        json.put("boxId", 2);
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note3");
+        updatedNote.setContent("Content for Note3");
+        updatedNote.setBoxId(2);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_jsonContainsNameAndContent_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("content", "Content for Note3");
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note3");
+        updatedNote.setContent("Content for Note3");
+        updatedNote.setBoxId(1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_jsonContainsNameAndBoxId_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        json.put("boxId", 2);
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note3");
+        updatedNote.setContent("Note2's content");
+        updatedNote.setBoxId(2);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_jsonContainsContentAndBoxId_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("content", "Content for Note3");
+        json.put("boxId", 2);
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note2");
+        updatedNote.setContent("Content for Note3");
+        updatedNote.setBoxId(2);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_onlyName_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("name", "Note3");
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note3");
+        updatedNote.setContent("Note2's content");
+        updatedNote.setBoxId(1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_onlyContent_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("content", "Content for Note3");
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note2");
+        updatedNote.setContent("Content for Note3");
+        updatedNote.setBoxId(1);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should return DTO with updated entity")
+    void updateNote_onlyBoxId_allShouldBeSame() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        int id = 2;
+        //and
+        JSONObject json = new JSONObject();
+        json.put("boxId", 2);
+        //and
+        Note updatedNote = new Note();
+        updatedNote.setId(id);
+        updatedNote.setName("Note2");
+        updatedNote.setContent("Note2's content");
+        updatedNote.setBoxId(2);
+        //system under test
+        NoteService service = new NoteService(mockNoteRepository);
+        //when
+        NoteRead dto = service.updateNote(json, id);
+        //and
+        NoteRead result = service.findNoteById(id);
+        //then
+        assertThat(dto).isEqualTo(new NoteRead(updatedNote));
+        //and
+        assertThat(result).isEqualTo(new NoteRead(updatedNote));
     }
 }

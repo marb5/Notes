@@ -1,5 +1,6 @@
 package com.example.notes.model;
 
+import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,16 @@ public class Note {
     private int boxId;
 
     public Note() {
+    }
+
+    public Note(Optional<Note> note) {
+        this();
+        if (note.isPresent()) {
+            this.id = note.get().getId();
+            this.name = note.get().getName();
+            this.content = note.get().getContent();
+            this.boxId = note.get().getBoxId();
+        }
     }
 
     public int getId() {
@@ -57,6 +68,31 @@ public class Note {
     public void setBoxId(int boxId) {
         this.boxId = boxId;
     }
-    
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Note other = (Note) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (this.boxId != other.boxId) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.content, other.content)) {
+            return false;
+        }
+        return true;
+    }
 }

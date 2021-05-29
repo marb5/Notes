@@ -56,6 +56,13 @@ public class MockNoteRepository {
             
             @Override
             public Note save(Note note) {
+                for (int i = 0; i < list.size(); ++i)
+                    if (list.get(i).getId() == note.getId()) {
+                        list.get(i).setName(note.getName());
+                        list.get(i).setContent(note.getContent());
+                        list.get(i).setBoxId(note.getBoxId());
+                        return note;
+                    }
                 note.setId(newIndex++);
                 list.add(note);
                 return note;

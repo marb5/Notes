@@ -6,6 +6,7 @@ import com.example.notes.model.NoteRead;
 import com.example.notes.model.NoteRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -65,5 +66,44 @@ public class NoteService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lack of box id!");
         
         return new NoteRead(repository.save(newNote));
+    }
+    
+    public NoteRead updateNote(JSONObject json, int id) {
+        Note updateNote;
+        try {
+            updateNote = new Note(repository.findById(id));
+            if (updateNote.equals(new Note()))
+               throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        //note name
+        if (json.get("name") != null) {
+            if (!json.get("name").toString().isBlank())
+                updateNote.setName(json.get("name").toString());
+            else
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lack of note name!");
+        }
+        //note content
+        if (json.get("content") != null) {
+            if (!json.get("content").toString().isBlank())
+                updateNote.setContent(json.get("content").toString());
+            else
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lack of note content!");
+        }
+        //note box_id
+        if (json.get("boxId") != null) {
+            try {
+                int boxId = Integer.parseInt(json.get("boxId").toString());
+                if (boxId < 1)
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box id should be greater than 0!");
+                updateNote.setBoxId(boxId);
+            }
+            catch (NumberFormatException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong box id!", e);
+            }
+        }
+        
+        return new NoteRead(repository.save(updateNote));
     }
 }
