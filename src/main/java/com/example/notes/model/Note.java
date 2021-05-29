@@ -1,5 +1,6 @@
 package com.example.notes.model;
 
+import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public class MockNoteRepository {
     Note note1, note2;
     ArrayList<Note> list;
+    int newIndex = 3;
 
     MockNoteRepository() {
         note1 = new Note();
@@ -51,6 +52,13 @@ public class MockNoteRepository {
                     if (list.get(i).getId() == id)
                         return Optional.of(list.get(i));
                 return null;
+            }
+            
+            @Override
+            public Note save(Note note) {
+                note.setId(newIndex++);
+                list.add(note);
+                return note;
             }
 
             @Override
@@ -120,11 +128,6 @@ public class MockNoteRepository {
 
             @Override
             public Page<Note> findAll(Pageable arg0) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public <S extends Note> S save(S arg0) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 

@@ -19,6 +19,12 @@ public class NoteRead {
             this.content = note.get().getContent();
         }
     }
+    
+    public NoteRead(Note note) {
+        this.id = note.getId();
+        this.name = note.getName();
+        this.content = note.getContent();
+    }
 
     public int getId() {
         return id;

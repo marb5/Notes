@@ -13,4 +13,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface NoteRepository extends JpaRepository<Note, Integer> {
     public List<Note> findAll();
     public Optional<Note> findById(Integer id);
+    public Note save(Note note);
 }
