@@ -67,6 +67,22 @@ public class MockNoteRepository {
                 list.add(note);
                 return note;
             }
+            
+            @Override
+            public boolean existsById(Integer id) {
+                for (int i = 0; i < list.size(); ++i)
+                    if (list.get(i).getId() == id)
+                        return true;
+                return false;
+            }
+            
+            @Override
+            public void deleteById(Integer id) {
+                for (int i = 0; i < list.size(); ++i) {
+                    if (list.get(i).getId() == id)
+                        list.remove(id);
+                }
+            }
 
             @Override
             public List<Note> findAll(Sort arg0) {
@@ -139,17 +155,7 @@ public class MockNoteRepository {
             }
 
             @Override
-            public boolean existsById(Integer arg0) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
             public long count() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void deleteById(Integer arg0) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 

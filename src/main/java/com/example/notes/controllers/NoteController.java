@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,5 +47,10 @@ public class NoteController {
     @PatchMapping(path = "/{id}", consumes = "application/json")
     ResponseEntity<NoteRead> patchNote(@PathVariable("id") Integer id, @RequestBody JSONObject json) {
         return new ResponseEntity<>(service.updateNote(json, id), HttpStatus.OK);
+    }
+    
+    @DeleteMapping(path = "/{id}")
+    ResponseEntity<String> deleteNote(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(service.deleteNote(id), HttpStatus.OK);
     }
 }

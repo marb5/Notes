@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -786,5 +788,34 @@ public class NoteServiceTest {
         assertThat(dto).isEqualTo(new NoteRead(updatedNote));
         //and
         assertThat(result).isEqualTo(new NoteRead(updatedNote));
+    }
+    
+    @Test
+    @DisplayName("should throw NOT_FOUND")
+    void deleteNote_indexOutOfRange_shouldThrowNotFound() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //system under test
+        NoteService service = new NoteService((com.example.notes.model.NoteRepository) mockNoteRepository);
+        //when
+        try {
+            service.deleteNote(3);
+        } catch (Exception e) {
+            //then
+            assertThat(e).hasMessage("404 NOT_FOUND");
+        }
+    }
+    
+    @Test
+    @DisplayName("should response with ok status")
+    void deleteNote_deleteElement_shouldResponseOk() {
+        //given
+        NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //system under test
+        NoteService service = new NoteService((com.example.notes.model.NoteRepository) mockNoteRepository);
+        //when
+        String result = service.deleteNote(1);
+        //then
+        assertThat(result).isEqualTo("Deleted");
     }
 }

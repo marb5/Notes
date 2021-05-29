@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -105,5 +106,12 @@ public class NoteService {
         }
         
         return new NoteRead(repository.save(updateNote));
+    }
+    
+    public String deleteNote(int id) {
+        if (!repository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        repository.deleteById(id);
+        return "Deleted";
     }
 }

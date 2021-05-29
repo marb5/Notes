@@ -14,4 +14,6 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
     public List<Note> findAll();
     public Optional<Note> findById(Integer id);
     public Note save(Note note);
+    public boolean existsById(Integer id);
+    public void deleteById(Integer id);
 }
