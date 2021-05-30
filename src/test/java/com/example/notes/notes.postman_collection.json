@@ -145,6 +145,24 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "read boxes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/boxes",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boxes"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

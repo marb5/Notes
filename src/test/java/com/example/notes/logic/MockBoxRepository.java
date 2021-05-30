@@ -2,7 +2,9 @@ package com.example.notes.logic;
 
 import com.example.notes.model.Box;
 import com.example.notes.model.BoxRepository;
+import com.example.notes.model.note.Note;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Example;
@@ -23,9 +25,11 @@ public class MockBoxRepository {
         box1 = new Box();
         box1.setId(1);
         box1.setName("Box1");
+        box1.setNotes(new HashSet<Note>());
         box2 = new Box();
         box2.setId(2);
         box2.setName("Box2");
+        box2.setNotes(new HashSet<Note>());
         list = new ArrayList<>() {
                         {
                             add(box1);

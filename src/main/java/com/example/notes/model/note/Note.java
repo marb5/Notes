@@ -25,7 +25,7 @@ public class Note {
     private String name;
     private String content;
     @ManyToOne
-    @JoinColumn(name="box_id", referencedColumnName = "id")
+    @JoinColumn(name = "box_id", referencedColumnName = "id")
     private Box box;
 
     public Note() {
@@ -96,7 +96,7 @@ public class Note {
         if (this.id != other.id) {
             return false;
         }
-        if (this.box != other.box) {
+        if (!Objects.equals(this.box, other.box)) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {

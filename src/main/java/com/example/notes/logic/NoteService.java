@@ -31,8 +31,7 @@ public class NoteService {
     
     public List<NotePresent> findAllNotes() {
         List<NotePresent> all = new ArrayList<>();
-        repository.findAll().stream()
-                        .collect(Collectors.toList())
+        repository.findAll()
                         .forEach((Note note) -> {
                             all.add(new NotePresent(note));
         });
