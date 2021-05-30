@@ -1,6 +1,6 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Box;
+import com.example.notes.model.box.Box;
 import com.example.notes.model.BoxRepository;
 import com.example.notes.model.note.Note;
 import com.example.notes.model.note.NotePresent;
@@ -9,7 +9,6 @@ import com.example.notes.model.NoteRepository;
 import com.example.notes.model.note.NoteWrite;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

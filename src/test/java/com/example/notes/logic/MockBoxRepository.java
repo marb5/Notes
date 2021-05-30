@@ -1,6 +1,6 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Box;
+import com.example.notes.model.box.Box;
 import com.example.notes.model.BoxRepository;
 import com.example.notes.model.note.Note;
 import java.util.ArrayList;
@@ -59,6 +59,19 @@ public class MockBoxRepository {
                     if (list.get(i).getId() == id)
                         return true;
                 return false;
+            }
+            
+            @Override
+            public Box save(Box box) {
+                for (int i = 0; i < list.size(); ++i)
+                    if (list.get(i).getId() == box.getId()) {
+                        list.get(i).setName(box.getName());
+                        return box;
+                    }
+                box.setId(newIndex++);
+                box.setNotes(new HashSet<Note>());
+                list.add(box);
+                return box;
             }
 
             @Override
@@ -128,11 +141,6 @@ public class MockBoxRepository {
 
             @Override
             public Page<Box> findAll(Pageable arg0) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public <S extends Box> S save(S arg0) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 

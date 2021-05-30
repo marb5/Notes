@@ -4,6 +4,7 @@ import com.example.notes.model.note.NotePresent;
 import com.example.notes.model.note.NoteRead;
 import com.example.notes.logic.NoteService;
 import java.util.List;
+import javax.transaction.Transactional;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class NoteController {
         return new ResponseEntity<>(service.findNoteById(id), HttpStatus.OK);
     }
     
+    @Transactional
     @PostMapping
     ResponseEntity<NoteRead> postNote(@RequestBody JSONObject json) {
         return new ResponseEntity<>(service.addNewNote(json), HttpStatus.CREATED);

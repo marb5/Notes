@@ -1,7 +1,8 @@
-package com.example.notes.model;
+package com.example.notes.model.box;
 
 import com.example.notes.model.note.NotePresent;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,9 @@ import java.util.stream.Collectors;
 public class BoxRead {
     private String name;
     private Set<NotePresent> notes;
+    
+    public BoxRead() {
+    }
 
     public BoxRead(Box box) {
         this.name = box.getName();
@@ -19,6 +23,15 @@ public class BoxRead {
                             .map(NotePresent::new)
                             .collect(Collectors.toSet());
         
+    }
+    
+    public BoxRead(Optional<Box> box) {
+        if (box.isPresent()) {
+            this.name = box.get().getName();
+            notes = box.get().getNotes().stream()
+                            .map(NotePresent::new)
+                            .collect(Collectors.toSet());
+        }
     }
 
     public String getName() {

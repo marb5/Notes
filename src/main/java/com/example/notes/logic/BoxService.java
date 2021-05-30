@@ -1,7 +1,7 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Box;
-import com.example.notes.model.BoxRead;
+import com.example.notes.model.box.Box;
+import com.example.notes.model.box.BoxRead;
 import com.example.notes.model.BoxRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,5 +25,13 @@ public class BoxService {
                             all.add(new BoxRead(box));
         });
         return all;
+    }
+    
+    public BoxRead findBox(int id) {
+        return new BoxRead(repository.findById(id));
+    }
+    
+    public Box addBox(Box box) {
+        return repository.save(box);
     }
 }

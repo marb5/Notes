@@ -1,9 +1,8 @@
 package com.example.notes.model.note;
 
-import com.example.notes.model.Box;
+import com.example.notes.model.box.Box;
 import java.util.Objects;
 import java.util.Optional;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,6 +41,7 @@ public class Note {
     }
 
     public Note(String name, String content, Optional<Box> box) {
+        this();
         if (box.isPresent()) {
             this.name = name;
             this.content = content;

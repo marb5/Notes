@@ -1,11 +1,18 @@
 package com.example.notes.controllers;
 
 import com.example.notes.logic.BoxService;
-import com.example.notes.model.BoxRead;
+import com.example.notes.model.box.Box;
+import com.example.notes.model.box.BoxRead;
 import java.util.List;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +32,17 @@ public class BoxController {
     @GetMapping
     ResponseEntity<List<BoxRead>> getAllBoxes() {
         return new ResponseEntity<>(service.findAllBoxes(), HttpStatus.OK);
+    }
+    
+    @GetMapping("/{id}")
+    ResponseEntity<BoxRead> getBoxById(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(service.findBox(id), HttpStatus.OK);
+    }
+    
+    @PostMapping
+    ResponseEntity<?> createBox(@Valid @RequestBody Box box, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return new ResponseEntity<>(bindingResult.getFieldError(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(service.addBox(box), HttpStatus.CREATED);
     }
 }

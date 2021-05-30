@@ -1,7 +1,7 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Box;
-import com.example.notes.model.BoxRead;
+import com.example.notes.model.box.Box;
+import com.example.notes.model.box.BoxRead;
 import com.example.notes.model.BoxRepository;
 import com.example.notes.model.note.Note;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -69,5 +70,62 @@ public class BoxServiceTest {
         List<BoxRead> resultList = service.findAllBoxes();
         //then
         assertThat(resultList).isEqualTo(listOfBoxes);
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of box name!\" ")
+    void addBox_emptyName_shouldThrowErrorLackName() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
+        Box json = new Box();
+        json.setName("");
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        try {
+            service.addBox(json);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of box name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of box name!\" ")
+    void addBox_whitespacesName_shouldThrowErrorLackName() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
+        Box json = new Box();
+        json.setName("       ");
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        try {
+            service.addBox(json);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of box name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should return new Box")
+    void addBox_properName_shouldReturnRightBox() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
+        Box json = new Box();
+        json.setName("Box3");
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        Box result = service.addBox(json);
+        //then
+        assertThat(result).isEqualTo(json);
+        assertThat(service.findBox(3)).isEqualTo(new BoxRead(result));
     }
 }

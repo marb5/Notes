@@ -1,11 +1,10 @@
-package com.example.notes.model;
+package com.example.notes.model.box;
 
 import com.example.notes.model.note.Note;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 /**
  *
@@ -24,6 +24,7 @@ public class Box implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @NotBlank(message = "Lack of box name!")
     private String name;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "box")
     private Set<Note> notes;
@@ -32,6 +33,7 @@ public class Box implements Serializable {
     }
 
     public Box(Optional<Box> box) {
+        this();
         if (box.isPresent()) {
             this.id = box.get().getId();
             this.name = box.get().getName();

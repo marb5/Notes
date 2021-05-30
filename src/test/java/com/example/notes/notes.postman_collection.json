@@ -163,6 +163,65 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "read box by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/boxes/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boxes",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create box",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Box3\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/boxes",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boxes"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

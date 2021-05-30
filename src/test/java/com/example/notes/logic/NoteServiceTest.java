@@ -1,6 +1,6 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Box;
+import com.example.notes.model.box.Box;
 import com.example.notes.model.BoxRepository;
 import com.example.notes.model.note.Note;
 import com.example.notes.model.note.NotePresent;
