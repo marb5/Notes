@@ -1,10 +1,11 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Note;
-import com.example.notes.model.NotePresent;
-import com.example.notes.model.NoteRead;
+import com.example.notes.model.Box;
+import com.example.notes.model.BoxRepository;
+import com.example.notes.model.note.Note;
+import com.example.notes.model.note.NotePresent;
+import com.example.notes.model.note.NoteRead;
 import com.example.notes.model.NoteRepository;
-import java.lang.NullPointerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -25,21 +24,28 @@ import org.springframework.web.server.ResponseStatusException;
  * @author marcin
  */
 public class NoteServiceTest {
+    private Box box1, box2;
     private Note note1, note2;
     private ArrayList<Note> list;
     
     @BeforeEach
     void initTestData() {
+        box1 = new Box();
+        box1.setId(1);
+        box1.setName("Box1");
+        box2 = new Box();
+        box2.setId(2);
+        box2.setName("Box2");
         note1 = new Note();
         note1.setId(1);
         note1.setName("Note1");
         note1.setContent("Note1's content");
-        note1.setBoxId(1);
+        note1.setBox(box1);
         note2 = new Note();
         note2.setId(2);
         note2.setName("Note2");
         note2.setContent("Note2's content");
-        note2.setBoxId(1);
+        note2.setBox(box1);
         list = new ArrayList<>() {
                         {
                             add(note1);
@@ -54,8 +60,10 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = Mockito.mock(NoteRepository.class);
         when(mockNoteRepository.findAll()).thenReturn(new ArrayList<Note>());
+        //and
+        BoxRepository mockBoxRepository = Mockito.mock(BoxRepository.class);
         //system under test
-        NoteService service = new NoteService((com.example.notes.model.NoteRepository) mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         List<NotePresent> resultList = service.findAllNotes();
         //then
@@ -68,12 +76,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         ArrayList<NotePresent> listOfPresentedNotes = new ArrayList<>();
         list.forEach((Note note) -> {
             listOfPresentedNotes.add(new NotePresent(note));
         });
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         List<NotePresent> resultList = service.findAllNotes();
         //then
@@ -86,8 +96,10 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = Mockito.mock(NoteRepository.class);
         when(mockNoteRepository.findById(anyInt())).thenReturn(Optional.of(new Note()));
+        //and
+        BoxRepository mockBoxRepository = Mockito.mock(BoxRepository.class);
         //system under test
-        NoteService service = new NoteService((com.example.notes.model.NoteRepository) mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead result = service.findNoteById(1);
         //then
@@ -100,9 +112,11 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         NoteRead note = new NoteRead(Optional.of(note2));
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead result = service.findNoteById(2);
         //then
@@ -115,11 +129,13 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("content", "Content for Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -136,12 +152,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "");
         json.put("content", "Content for Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -158,12 +176,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "      ");
         json.put("content", "Content for Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -180,11 +200,13 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -201,12 +223,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -223,12 +247,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "                   ");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -245,11 +271,13 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "Content for Note3");
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -265,12 +293,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "Content for Note3");
         json.put("boxId", 0);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -287,12 +317,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "Content for Note3");
         json.put("boxId", -1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -308,12 +340,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "Content for Note3");
         json.put("boxId", "");
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -330,12 +364,14 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "Content for Note3");
         json.put("boxId", "q");
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.addNewNote(json);
@@ -352,6 +388,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         JSONObject json = new JSONObject();
         json.put("name", "Note3");
         json.put("content", "Content for Note3");
@@ -361,9 +399,9 @@ public class NoteServiceTest {
         newNote.setId(3);
         newNote.setName("Note3");
         newNote.setContent("Content for Note3");
-        newNote.setBoxId(1);
+        newNote.setBox(box1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.addNewNote(json);
         //and
@@ -380,6 +418,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 3;
         //and
         JSONObject json = new JSONObject();
@@ -387,7 +427,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -404,6 +444,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -411,7 +453,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -428,6 +470,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -435,7 +479,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -452,6 +496,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -459,7 +505,7 @@ public class NoteServiceTest {
         json.put("content", "");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -476,6 +522,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -483,7 +531,7 @@ public class NoteServiceTest {
         json.put("content", "                   ");
         json.put("boxId", 1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -500,6 +548,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -507,7 +557,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", 0);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -524,6 +574,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -531,7 +583,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", -1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -547,6 +599,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -554,7 +608,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", "");
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -571,6 +625,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -578,7 +634,7 @@ public class NoteServiceTest {
         json.put("content", "Content for Note3");
         json.put("boxId", "q");
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.updateNote(json, id);
@@ -595,6 +651,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -606,9 +664,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note3");
         updatedNote.setContent("Content for Note3");
-        updatedNote.setBoxId(2);
+        updatedNote.setBox(box2);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -625,6 +683,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -635,9 +695,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note3");
         updatedNote.setContent("Content for Note3");
-        updatedNote.setBoxId(1);
+        updatedNote.setBox(box1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -654,6 +714,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -664,9 +726,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note3");
         updatedNote.setContent("Note2's content");
-        updatedNote.setBoxId(2);
+        updatedNote.setBox(box2);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -683,6 +745,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -693,9 +757,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note2");
         updatedNote.setContent("Content for Note3");
-        updatedNote.setBoxId(2);
+        updatedNote.setBox(box2);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -712,6 +776,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -721,9 +787,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note3");
         updatedNote.setContent("Note2's content");
-        updatedNote.setBoxId(1);
+        updatedNote.setBox(box1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -740,6 +806,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -749,9 +817,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note2");
         updatedNote.setContent("Content for Note3");
-        updatedNote.setBoxId(1);
+        updatedNote.setBox(box1);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -768,6 +836,8 @@ public class NoteServiceTest {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
         //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
         int id = 2;
         //and
         JSONObject json = new JSONObject();
@@ -777,9 +847,9 @@ public class NoteServiceTest {
         updatedNote.setId(id);
         updatedNote.setName("Note2");
         updatedNote.setContent("Note2's content");
-        updatedNote.setBoxId(2);
+        updatedNote.setBox(box2);
         //system under test
-        NoteService service = new NoteService(mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         NoteRead dto = service.updateNote(json, id);
         //and
@@ -795,8 +865,10 @@ public class NoteServiceTest {
     void deleteNote_indexOutOfRange_shouldThrowNotFound() {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
         //system under test
-        NoteService service = new NoteService((com.example.notes.model.NoteRepository) mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         try {
             service.deleteNote(3);
@@ -811,8 +883,10 @@ public class NoteServiceTest {
     void deleteNote_deleteElement_shouldResponseOk() {
         //given
         NoteRepository mockNoteRepository = (new MockNoteRepository()).init();
+        //and
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
         //system under test
-        NoteService service = new NoteService((com.example.notes.model.NoteRepository) mockNoteRepository);
+        NoteService service = new NoteService(mockNoteRepository, mockBoxRepository);
         //when
         String result = service.deleteNote(1);
         //then

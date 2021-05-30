@@ -1,33 +1,18 @@
-package com.example.notes.model;
+package com.example.notes.model.note;
 
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  *
  * @author marcin
  */
-public class NoteRead {
+public class NotePresent {
     private int id;
     private String name;
-    private String content;
 
-    public NoteRead() {
-    }
-
-    public NoteRead(Optional<Note> note) {
-        this();
-        if (note.isPresent()) {
-            this.id = note.get().getId();
-            this.name = note.get().getName();
-            this.content = note.get().getContent();
-        }
-    }
-    
-    public NoteRead(Note note) {
+    public NotePresent(Note note) {
         this.id = note.getId();
         this.name = note.getName();
-        this.content = note.getContent();
     }
 
     public int getId() {
@@ -36,10 +21,6 @@ public class NoteRead {
 
     public String getName() {
         return name;
-    }
-
-    public String getContent() {
-        return content;
     }
 
     @Override
@@ -53,16 +34,15 @@ public class NoteRead {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NoteRead other = (NoteRead) obj;
+        final NotePresent other = (NotePresent) obj;
         if (this.id != other.id) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (!Objects.equals(this.content, other.content)) {
-            return false;
-        }
         return true;
-    } 
+    }
+    
+    
 }

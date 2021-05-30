@@ -1,16 +1,17 @@
 package com.example.notes.logic;
 
-import com.example.notes.model.Note;
-import com.example.notes.model.NotePresent;
-import com.example.notes.model.NoteRead;
+import com.example.notes.model.Box;
+import com.example.notes.model.BoxRepository;
+import com.example.notes.model.note.Note;
+import com.example.notes.model.note.NotePresent;
+import com.example.notes.model.note.NoteRead;
 import com.example.notes.model.NoteRepository;
+import com.example.notes.model.note.NoteWrite;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,9 +22,11 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class NoteService {
     private final NoteRepository repository;
+    private final BoxRepository boxRepository;
     
-    NoteService(NoteRepository noteRepository) {
+    NoteService(NoteRepository noteRepository, BoxRepository boxRepository) {
         this.repository = noteRepository;
+        this.boxRepository = boxRepository;
     }
     
     public List<NotePresent> findAllNotes() {
@@ -41,7 +44,7 @@ public class NoteService {
     }
     
     public NoteRead addNewNote(JSONObject json) {
-        Note newNote = new Note();
+        NoteWrite newNote = new NoteWrite();
         //note name
         if (json.get("name") != null && !json.get("name").toString().isBlank())
             newNote.setName(json.get("name").toString());
@@ -66,7 +69,8 @@ public class NoteService {
         else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lack of box id!");
         
-        return new NoteRead(repository.save(newNote));
+        Note note = new Note(newNote.getName(), newNote.getContent(), boxRepository.findById(newNote.getBoxId()));
+        return new NoteRead(repository.save(note));
     }
     
     public NoteRead updateNote(JSONObject json, int id) {
@@ -98,7 +102,8 @@ public class NoteService {
                 int boxId = Integer.parseInt(json.get("boxId").toString());
                 if (boxId < 1)
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box id should be greater than 0!");
-                updateNote.setBoxId(boxId);
+                if (boxRepository.existsById(boxId));
+                    updateNote.setBox(new Box(boxRepository.findById(boxId)));
             }
             catch (NumberFormatException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong box id!", e);

@@ -1,5 +1,6 @@
 package com.example.notes.model;
 
+import com.example.notes.model.note.Note;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

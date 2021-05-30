@@ -1,5 +1,6 @@
-package com.example.notes.model;
+package com.example.notes.model.note;
 
+import com.example.notes.model.Box;
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Column;
@@ -7,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -21,8 +24,9 @@ public class Note {
     private int id;
     private String name;
     private String content;
-    @Column(name = "box_id")
-    private int boxId;
+    @ManyToOne
+    @JoinColumn(name="box_id", referencedColumnName = "id")
+    private Box box;
 
     public Note() {
     }
@@ -33,7 +37,15 @@ public class Note {
             this.id = note.get().getId();
             this.name = note.get().getName();
             this.content = note.get().getContent();
-            this.boxId = note.get().getBoxId();
+            this.box = note.get().getBox();
+        }
+    }
+
+    public Note(String name, String content, Optional<Box> box) {
+        if (box.isPresent()) {
+            this.name = name;
+            this.content = content;
+            this.box = box.get();
         }
     }
 
@@ -61,12 +73,12 @@ public class Note {
         this.content = content;
     }
 
-    public int getBoxId() {
-        return boxId;
+    public Box getBox() {
+        return box;
     }
 
-    public void setBoxId(int boxId) {
-        this.boxId = boxId;
+    public void setBox(Box box) {
+        this.box = box;
     }
 
     @Override
@@ -84,7 +96,7 @@ public class Note {
         if (this.id != other.id) {
             return false;
         }
-        if (this.boxId != other.boxId) {
+        if (this.box != other.box) {
             return false;
         }
         if (!Objects.equals(this.name, other.name)) {

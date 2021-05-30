@@ -1,7 +1,7 @@
 package com.example.notes.controllers;
 
-import com.example.notes.model.NotePresent;
-import com.example.notes.model.NoteRead;
+import com.example.notes.model.note.NotePresent;
+import com.example.notes.model.note.NoteRead;
 import com.example.notes.logic.NoteService;
 import java.util.List;
 import org.json.simple.JSONObject;
