@@ -40,6 +40,10 @@ public class MockBoxRepository {
     
     BoxRepository init() {
         return new BoxRepository() {
+            public long count() {
+                return list.size();
+            }
+            
             @Override
             public List<Box> findAll() {
                 return list;
@@ -66,12 +70,20 @@ public class MockBoxRepository {
                 for (int i = 0; i < list.size(); ++i)
                     if (list.get(i).getId() == box.getId()) {
                         list.get(i).setName(box.getName());
-                        return box;
+                        return list.get(i);
                     }
                 box.setId(newIndex++);
                 box.setNotes(new HashSet<Note>());
                 list.add(box);
                 return box;
+            }
+            
+            @Override
+            public void deleteById(Integer id) {
+                for (int i = 0; i < list.size(); ++i) {
+                    if (list.get(i).getId() == id)
+                       list.remove(list.get(i));
+                }
             }
 
             @Override
@@ -141,16 +153,6 @@ public class MockBoxRepository {
 
             @Override
             public Page<Box> findAll(Pageable arg0) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public long count() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void deleteById(Integer arg0) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 

@@ -48,6 +48,10 @@ public class MockNoteRepository {
     
     NoteRepository init() {
         return new NoteRepository() {
+            public long count() {
+                return list.size();
+            }
+            
             @Override
             public List<Note> findAll() {
                 return list;
@@ -68,7 +72,7 @@ public class MockNoteRepository {
                         list.get(i).setName(note.getName());
                         list.get(i).setContent(note.getContent());
                         list.get(i).setBox(note.getBox());
-                        return note;
+                        return list.get(i);
                     }
                 note.setId(newIndex++);
                 list.add(note);
@@ -87,7 +91,7 @@ public class MockNoteRepository {
             public void deleteById(Integer id) {
                 for (int i = 0; i < list.size(); ++i) {
                     if (list.get(i).getId() == id)
-                        list.remove(id);
+                       list.remove(list.get(i));
                 }
             }
 
@@ -158,11 +162,6 @@ public class MockNoteRepository {
 
             @Override
             public Page<Note> findAll(Pageable arg0) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public long count() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 

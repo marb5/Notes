@@ -16,4 +16,5 @@ public interface BoxRepository extends JpaRepository<Box, Integer> {
     public Optional<Box> findById(Integer id);
     public boolean existsById(Integer id);
     public Box save(Box box);
+    public void deleteById(Integer id);
 }

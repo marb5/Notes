@@ -222,6 +222,53 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "patch box",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/boxes/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boxes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete box",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/boxes/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"boxes",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

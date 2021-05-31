@@ -891,5 +891,6 @@ public class NoteServiceTest {
         String result = service.deleteNote(1);
         //then
         assertThat(result).isEqualTo("Deleted");
+        assertThat(mockNoteRepository.count()).isEqualTo(1);
     }
 }

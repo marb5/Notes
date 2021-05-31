@@ -5,7 +5,9 @@ import com.example.notes.model.box.BoxRead;
 import com.example.notes.model.BoxRepository;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -33,5 +35,19 @@ public class BoxService {
     
     public Box addBox(Box box) {
         return repository.save(box);
+    }
+    
+    public Box updateBox(Box box, int id) {
+        if (!repository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        box.setId(id);
+        return repository.save(box);
+    }
+    
+    public String deleteBox(int id) {
+        if (!repository.existsById(id))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        repository.deleteById(id);
+        return "Deleted";
     }
 }

@@ -128,4 +128,92 @@ public class BoxServiceTest {
         assertThat(result).isEqualTo(json);
         assertThat(service.findBox(3)).isEqualTo(new BoxRead(result));
     }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of box name!\" ")
+    void updateBox_emptyName_shouldThrowErrorLackName() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
+        Box json = new Box();
+        json.setName("");
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        try {
+            service.updateBox(json, 2);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of box name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should throw error \"Lack of box name!\" ")
+    void updateBox_whitespacesName_shouldThrowErrorLackName() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
+        Box json = new Box();
+        json.setName("       ");
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        try {
+            service.updateBox(json, 2);
+        }
+        catch (ResponseStatusException e) {
+            //then
+            assertThat(e).hasMessage("400 BAD_REQUEST \"Lack of box name!\"");
+        }
+    }
+    
+    @Test
+    @DisplayName("should return new Box")
+    void updateBox_properName_shouldReturnRightBox() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //and
+        Box json = new Box();
+        json.setName("Box3");
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        Box result = service.updateBox(json, 2);
+        //and
+        BoxRead searched = service.findBox(2);
+        //then
+        assertThat(searched).isEqualTo(new BoxRead(result));
+    }
+    
+    @Test
+    @DisplayName("should throw NOT_FOUND")
+    void deleteNote_indexOutOfRange_shouldThrowNotFound() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        try {
+            service.deleteBox(3);
+        } catch (Exception e) {
+            //then
+            assertThat(e).hasMessage("404 NOT_FOUND");
+        }
+    }
+    
+    @Test
+    @DisplayName("should response with ok status")
+    void deleteNote_deleteElement_shouldResponseOk() {
+        //given
+        BoxRepository mockBoxRepository = (new MockBoxRepository()).init();
+        //system under test
+        BoxService service = new BoxService(mockBoxRepository);
+        //when
+        String result = service.deleteBox(1);
+        //then
+        assertThat(result).isEqualTo("Deleted");
+        assertThat(mockBoxRepository.count()).isEqualTo(1);
+    }
 }

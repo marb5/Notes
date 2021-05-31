@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class Box implements Serializable {
     private int id;
     @NotBlank(message = "Lack of box name!")
     private String name;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "box")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "box", cascade = CascadeType.ALL)
     private Set<Note> notes;
 
     public Box() {
